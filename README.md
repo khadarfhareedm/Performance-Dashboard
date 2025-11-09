@@ -57,3 +57,10 @@ npm run dev
 
 # Open in browser
 http://localhost:3000/dashboard
+<img width="1762" height="850" alt="image" src="https://github.com/user-attachments/assets/ac344cbd-a07d-42a4-a920-4d9c4bae24a5" />
+
+<img width="1770" height="835" alt="image" src="https://github.com/user-attachments/assets/80392220-b07f-44a5-a91b-6779388ecd6f" />
+
+<img width="1752" height="829" alt="image" src="https://github.com/user-attachments/assets/75a7f24e-017a-4ed3-b63e-0978bc44e9a3" />
+
+
