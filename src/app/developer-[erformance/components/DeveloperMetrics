@@ -1,0 +1,149 @@
+import React from 'react';
+import Icon from '@/components/ui/AppIcon';
+
+interface MetricCardProps {
+  title: string;
+  value: string;
+  change: string;
+  trend: 'up' | 'down' | 'stable';
+  icon: string;
+  threshold?: 'good' | 'warning' | 'critical';
+}
+
+const MetricCard = ({ title, value, change, trend, icon, threshold = 'good' }: MetricCardProps) => {
+  const getThresholdColor = () => {
+    switch (threshold) {
+      case 'good':
+        return 'text-success border-success/20 bg-success/5';
+      case 'warning':
+        return 'text-warning border-warning/20 bg-warning/5';
+      case 'critical':
+        return 'text-error border-error/20 bg-error/5';
+      default:
+        return 'text-muted-foreground border-border bg-muted/5';
+    }
+  };
+
+  const getTrendIcon = () => {
+    switch (trend) {
+      case 'up':
+        return 'ArrowTrendingUpIcon';
+      case 'down':
+        return 'ArrowTrendingDownIcon';
+      case 'stable':
+        return 'MinusIcon';
+      default:
+        return 'MinusIcon';
+    }
+  };
+
+  return (
+    <div className={`p-4 rounded-lg border ${getThresholdColor()}`}>
+      <div className="flex items-center justify-between mb-2">
+        <Icon name={icon as any} size={20} />
+        <Icon 
+          name={getTrendIcon() as any} 
+          size={16} 
+          className={trend === 'up' ? 'text-success' : trend === 'down' ? 'text-error' : 'text-muted-foreground'} 
+        />
+      </div>
+      <div className="space-y-1">
+        <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
+        <p className="text-2xl font-bold text-foreground">{value}</p>
+        <p className="text-xs text-muted-foreground">{change}</p>
+      </div>
+    </div>
+  );
+};
+
+const DeveloperMetricsGrid = () => {
+  const metrics = [
+    {
+      title: 'Bundle Size',
+      value: '2.4 MB',
+      change: '-12% from last build',
+      trend: 'down' as const,
+      icon: 'ArchiveBoxIcon',
+      threshold: 'good' as const
+    },
+    {
+      title: 'Component Render Time',
+      value: '16.7ms',
+      change: 'Avg per component',
+      trend: 'stable' as const,
+      icon: 'ClockIcon',
+      threshold: 'good' as const
+    },
+    {
+      title: 'Hook Performance',
+      value: '0.3ms',
+      change: 'Avg execution time',
+      trend: 'down' as const,
+      icon: 'BoltIcon',
+      threshold: 'good' as const
+    },
+    {
+      title: 'Memory Leaks',
+      value: '0',
+      change: 'Active leaks detected',
+      trend: 'stable' as const,
+      icon: 'ShieldCheckIcon',
+      threshold: 'good' as const
+    },
+    {
+      title: 'Re-render Count',
+      value: '847',
+      change: '+23% this session',
+      trend: 'up' as const,
+      icon: 'ArrowPathIcon',
+      threshold: 'warning' as const
+    },
+    {
+      title: 'Virtual DOM Ops',
+      value: '1,234',
+      change: 'Operations per second',
+      trend: 'up' as const,
+      icon: 'CpuChipIcon',
+      threshold: 'good' as const
+    },
+    {
+      title: 'Code Splitting',
+      value: '89%',
+      change: 'Chunks loaded on demand',
+      trend: 'up' as const,
+      icon: 'PuzzlePieceIcon',
+      threshold: 'good' as const
+    },
+    {
+      title: 'Error Boundary',
+      value: '3',
+      change: 'Errors caught today',
+      trend: 'down' as const,
+      icon: 'ExclamationTriangleIcon',
+      threshold: 'warning' as const
+    }
+  ];
+
+  return (
+    <div className="mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <Icon name="ChartBarSquareIcon" size={20} className="text-primary" />
+          Development Metrics
+        </h2>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+          <span>Live Monitoring</span>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {metrics.map((metric, index) => (
+          <MetricCard key={index} {...metric} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default DeveloperMetricsGrid;
