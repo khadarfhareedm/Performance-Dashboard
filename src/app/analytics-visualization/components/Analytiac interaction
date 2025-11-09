@@ -1,1 +1,253 @@
 
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import FilterPanel from './FilterPanel';
+import MetricsRow from './MetricsRow';
+import VisualizationEngine from './VisualizationEngine';
+import DataQualityPanel from './DataQualityPanel';
+import DataTable from './DataTable';
+
+interface FilterOptions {
+  dateRange: { start: string; end: string };
+  dataSource: string;
+  category: string;
+  visualizationType: string;
+}
+
+interface MetricData {
+  id: string;
+  title: string;
+  value: string;
+  change: number;
+  trend: 'up' | 'down' | 'stable';
+  correlation: number;
+  icon: string;
+}
+
+interface DataPoint {
+  id: string;
+  name: string;
+  value: number;
+  category: string;
+  x?: number;
+  y?: number;
+  correlation?: number;
+}
+
+interface QualityMetric {
+  id: string;
+  name: string;
+  value: number;
+  status: 'excellent' | 'good' | 'warning' | 'critical';
+  description: string;
+}
+
+interface TableRow {
+  id: string;
+  timestamp: string;
+  source: string;
+  category: string;
+  value: number;
+  status: string;
+  correlation: number;
+}
+
+const AnalyticsInteractive = () => {
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [filters, setFilters] = useState<FilterOptions>({
+    dateRange: { start: '2024-01-01', end: '2024-12-31' },
+    dataSource: 'all',
+    category: 'performance',
+    visualizationType: 'bar'
+  });
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+
+  useEffect(() => {
+    setIsHydrated(true);
+    const interval = setInterval(() => {
+      setLastUpdated(new Date());
+    }, 300000); // Update every 5 minutes
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const mockMetrics: MetricData[] = [
+    {
+      id: '1',
+      title: 'Total Revenue',
+      value: '$2.4M',
+      change: 12.5,
+      trend: 'up',
+      correlation: 0.87,
+      icon: 'CurrencyDollarIcon'
+    },
+    {
+      id: '2',
+      title: 'Active Users',
+      value: '45.2K',
+      change: -3.2,
+      trend: 'down',
+      correlation: 0.65,
+      icon: 'UsersIcon'
+    },
+    {
+      id: '3',
+      title: 'Conversion Rate',
+      value: '3.8%',
+      change: 8.7,
+      trend: 'up',
+      correlation: 0.92,
+      icon: 'ArrowTrendingUpIcon'
+    },
+    {
+      id: '4',
+      title: 'Avg Session Time',
+      value: '4m 32s',
+      change: 0.0,
+      trend: 'stable',
+      correlation: 0.43,
+      icon: 'ClockIcon'
+    }
+  ];
+
+  const mockVisualizationData: DataPoint[] = [
+    { id: '1', name: 'Q1 Revenue', value: 580000, category: 'revenue', x: 1, y: 580, correlation: 0.85 },
+    { id: '2', name: 'Q2 Revenue', value: 720000, category: 'revenue', x: 2, y: 720, correlation: 0.92 },
+    { id: '3', name: 'Q3 Revenue', value: 650000, category: 'revenue', x: 3, y: 650, correlation: 0.78 },
+    { id: '4', name: 'Q4 Revenue', value: 890000, category: 'revenue', x: 4, y: 890, correlation: 0.95 },
+    { id: '5', name: 'Mobile Users', value: 15000, category: 'user-behavior', x: 1, y: 150, correlation: 0.67 },
+    { id: '6', name: 'Desktop Users', value: 25000, category: 'user-behavior', x: 2, y: 250, correlation: 0.73 },
+    { id: '7', name: 'Tablet Users', value: 8000, category: 'user-behavior', x: 3, y: 80, correlation: 0.45 },
+    { id: '8', name: 'API Response', value: 120, category: 'performance', x: 1, y: 120, correlation: 0.88 },
+    { id: '9', name: 'Page Load', value: 2400, category: 'performance', x: 2, y: 240, correlation: 0.91 },
+    { id: '10', name: 'Database Query', value: 45, category: 'performance', x: 3, y: 45, correlation: 0.96 }
+  ];
+
+  const mockQualityMetrics: QualityMetric[] = [
+    {
+      id: '1',
+      name: 'Data Completeness',
+      value: 98.5,
+      status: 'excellent',
+      description: 'Percentage of records with all required fields populated'
+    },
+    {
+      id: '2',
+      name: 'Data Accuracy',
+      value: 94.2,
+      status: 'good',
+      description: 'Validation against known reference datasets'
+    },
+    {
+      id: '3',
+      name: 'Data Freshness',
+      value: 87.8,
+      status: 'warning',
+      description: 'Percentage of data updated within acceptable timeframes'
+    },
+    {
+      id: '4',
+      name: 'Schema Compliance',
+      value: 99.1,
+      status: 'excellent',
+      description: 'Adherence to defined data structure requirements'
+    }
+  ];
+
+  const mockTableData: TableRow[] = Array.from({ length: 1000 }, (_, index) => ({
+    id: `row-${index + 1}`,
+    timestamp: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+    source: ['API', 'Database', 'Frontend', 'Mobile'][Math.floor(Math.random() * 4)],
+    category: ['Performance', 'User Behavior', 'Revenue', 'Engagement'][Math.floor(Math.random() * 4)],
+    value: Math.floor(Math.random() * 100000),
+    status: ['Active', 'Warning', 'Error'][Math.floor(Math.random() * 3)],
+    correlation: (Math.random() - 0.5) * 2
+  }));
+
+  const handleFiltersChange = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
+  };
+
+  const handleDataPointClick = (dataPoint: DataPoint) => {
+    console.log('Data point clicked:', dataPoint);
+  };
+
+  const handleRowClick = (row: TableRow) => {
+    console.log('Table row clicked:', row);
+  };
+
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="pt-16 px-6">
+          <div className="max-w-7xl mx-auto py-8">
+            <div className="animate-pulse space-y-6">
+              <div className="h-8 bg-muted rounded w-1/3"></div>
+              <div className="h-32 bg-muted rounded"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-32 bg-muted rounded"></div>
+                ))}
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 h-96 bg-muted rounded"></div>
+                <div className="h-96 bg-muted rounded"></div>
+              </div>
+              <div className="h-64 bg-muted rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="pt-16 px-6">
+        <div className="max-w-7xl mx-auto py-8">
+          {/* Page Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Analytics Visualization Dashboard
+            </h1>
+            <p className="text-muted-foreground">
+              Explore large datasets through interactive visualizations and advanced filtering capabilities
+            </p>
+          </div>
+
+          {/* Filter Panel */}
+          <FilterPanel filters={filters} onFiltersChange={handleFiltersChange} />
+
+          {/* Metrics Row */}
+          <MetricsRow metrics={mockMetrics} />
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            {/* Visualization Engine - 8 cols equivalent */}
+            <div className="lg:col-span-2">
+              <VisualizationEngine
+                data={mockVisualizationData}
+                visualizationType={filters.visualizationType}
+                onDataPointClick={handleDataPointClick}
+              />
+            </div>
+
+            {/* Right Panel - 4 cols equivalent */}
+            <div className="lg:col-span-1">
+              <DataQualityPanel
+                qualityMetrics={mockQualityMetrics}
+                lastUpdated={lastUpdated}
+              />
+            </div>
+          </div>
+
+          {/* Data Table */}
+          <DataTable data={mockTableData} onRowClick={handleRowClick} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AnalyticsInteractive;
